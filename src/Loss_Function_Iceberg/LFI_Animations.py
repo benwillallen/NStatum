@@ -1,5 +1,5 @@
 from manim import *
-from Manim_Functions import set_defaults
+from src.Manim_Functions import set_defaults
 
 config.background_color = "#001014"
 
@@ -26,8 +26,5 @@ class LFI1_Intro(Scene):
         self.wait(1)
         self.play(FadeIn(subtitle, shift=UP), run_time=2)
         self.wait(1)
-        self.play(FadeIn(author, shift=UP), run_time=2)
-        self.wait(2)
-
-        self.play(FadeOut(title, shift=UP), FadeOut(subtitle, shift=UP), FadeOut(author, shift=UP), run_time=2)
+        self.play(FadeOut(title, shift=UP), FadeOut(subtitle, shift=UP)),
         self.wait(1)
