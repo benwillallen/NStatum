@@ -32,5 +32,5 @@ class COT_Animations(Scene):
         self.play(TransformMatchingShapes(equation_2, equation_3))
         self.wait(3)
         self.play(TransformMatchingShapes(equation_3, equation_final),
-                  Write(SurroundingRectangle(equation_final, fill_color="#fff0d5", buff=0.2)))
-        self.wait(5)
+                  Write(SurroundingRectangle(equation_final, fill_color="#fff0d5", buff=0.2), run_time=3))
+        self.wait(2)
