@@ -3,7 +3,15 @@
 *.jpg
 *.png
 *.svg
+*.tex
+*.psd
 partial_movie_file_list.txt
+
+# Unrelated files
+*.docx
+*.pdf
+*.wav
+*.aep
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -39,7 +39,7 @@ class LFIB2_MSE(Scene):
         self.add(b_plane)
         
         title = Text("Mean Squared Error (MSE)", font_size=72).to_edge(UP)
-        formula = MathTex(r"\\text{MSE} = \\frac{1}{n} \\sum_{i=1}^{n} (y_i - \\hat{y}_i)^2", font_size=48).next_to(title, DOWN)
+        formula = MathTex("\\text{MSE} = \\frac{1}{n} \\sum_{i=1}^{n} (y_i - \\hat{y}_i)^2", font_size=48).next_to(title, DOWN)
 
         self.play(FadeIn(title, shift=UP), run_time=2)
         self.wait(1)
@@ -148,7 +148,7 @@ class LFIH8_SMAPE(Scene):
         self.wait(1)
 
 
-class LFIH9_HuberLoss(Scene):
+class LFII9_HuberLoss(Scene):
     def construct(self):
         b_plane = set_defaults()
         self.add(b_plane)
@@ -516,6 +516,22 @@ class LFIH31_TweedieLoss(Scene):
         
         title = Text("Tweedie Loss", font_size=72).to_edge(UP)
         formula = MathTex(r"\\text{Tweedie Loss} = \\sum_{i=1}^{n} \\left( y_i \\log(\\hat{y}_i) - \\hat{y}_i + \\frac{y_i^2}{2\\phi} \\right)", font_size=48).next_to(title, DOWN)
+
+        self.play(FadeIn(title, shift=UP), run_time=2)
+        self.wait(1)
+        self.play(FadeIn(formula, shift=UP), run_time=2)
+        self.wait(2)
+        self.play(FadeOut(title, shift=UP), FadeOut(formula, shift=UP)),
+        self.wait(1)
+
+
+class LFIH32_QuantileHuberLoss(Scene):
+    def construct(self):
+        b_plane = set_defaults()
+        self.add(b_plane)
+
+        title = Text("Quantile Huber Loss", font_size=72).to_edge(UP)
+        formula = MathTex(r"\\text{Quantile Huber Loss} = \\sum_{i=1}^{n} \\delta \\left( y_i - \\hat{y}_i \\right) + \\frac{1}{2} \\left( y_i - \\hat{y}_i \\right)^2", font_size=48).next_to(title, DOWN)
 
         self.play(FadeIn(title, shift=UP), run_time=2)
         self.wait(1)
