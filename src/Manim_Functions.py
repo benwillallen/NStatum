@@ -24,7 +24,7 @@ def set_defaults(plane=True):
     ArcBetweenPoints.set_default(color="#F17105", angle=PI/3)
     if plane:
         num_background = NumberPlane(x_range=[-10, 20, 1.5], y_range=[-10, 10, 1.5],
-                                     background_line_style={"stroke_color": "#21201e", "stroke_width": 10,
+                                     background_line_style={"stroke_color": "#686359", "stroke_width": 10,
                                                             "stroke_opacity": 0.1}).shift(4.5 * UP + 7 * LEFT)
     else:
         num_background = None

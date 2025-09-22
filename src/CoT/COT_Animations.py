@@ -34,3 +34,16 @@ class COT_Animations(Scene):
         self.play(TransformMatchingShapes(equation_3, equation_final),
                   Write(SurroundingRectangle(equation_final, fill_color="#fff0d5", buff=0.2), run_time=3))
         self.wait(2)
+
+
+class Grid_Blank(Scene):
+    def construct(self):
+        b_plane = set_defaults()
+        self.add(b_plane)
+
+
+class Logical_Deduction(Scene):
+    def construct(self):
+        b_plane = set_defaults()
+        equation_1 = MathTex("P\\implies Q", font_size=70, color="#fff0d5")
+        self.add(equation_1)

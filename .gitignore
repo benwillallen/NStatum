@@ -5,6 +5,8 @@
 *.svg
 *.tex
 *.psd
+*.ai
+*.pkf
 partial_movie_file_list.txt
 
 # Unrelated files
