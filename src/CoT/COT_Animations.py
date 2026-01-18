@@ -47,3 +47,33 @@ class Logical_Deduction(Scene):
         b_plane = set_defaults()
         equation_1 = MathTex("P\\implies Q", font_size=70, color="#fff0d5")
         self.add(equation_1)
+
+
+class Ending_Animation(Scene):
+    def construct(self):
+        b_plane = set_defaults()
+        self.add(b_plane)
+        thanks_message = Text("Thanks for Watching!", font='Futura Std', font_size=80, color="#fff0d5") \
+            .shift(2.5 * UP)
+        long_rectangle1 = Rectangle(height=0.7, width=3.6, stroke_width=9, color="#998675",
+                                    fill_color="#fff0d5", fill_opacity=1, z_index=0)
+        long_rectangle2 = Rectangle(height=0.7, width=3.6, stroke_width=9, color="#998675",
+                                    fill_color="#fff0d5", fill_opacity=1, z_index=1) \
+            .rotate(PI / 2)
+        short_rectangle1 = Rectangle(height=0.7, width=2.15, stroke_width=9, color="#998675",
+                                     fill_color="#fff0d5", fill_opacity=1, z_index=0) \
+            .shift(1.45 * UP + 0.725 * LEFT)
+        short_rectangle2 = Rectangle(height=0.7, width=2.15, stroke_width=9, color="#998675",
+                                     fill_color="#fff0d5", fill_opacity=1, z_index=1) \
+            .rotate(PI / 2).shift(1.45 * LEFT + 0.725 * UP)
+        vlogo = VGroup(long_rectangle1, short_rectangle1, long_rectangle2, short_rectangle2) \
+            .rotate(PI / 4).shift(DOWN + 0.5 * RIGHT)
+        self.play(DrawBorderThenFill(thanks_message), DrawBorderThenFill(vlogo), Wait(2))
+        self.play(vlogo[0].animate.set_stroke_color("#ff9955"), vlogo[1].animate.set_stroke_color("#55a5ff"),
+                  vlogo[2].animate.set_stroke_color("#55ffb5"), vlogo[3].animate.set_stroke_color("#ff5555"), Wait(2))
+        self.play(FadeOut(thanks_message),
+                  AnimationGroup(vlogo[2].animate.shift(7 * UP + 7 * LEFT),
+                                 vlogo[3].animate.shift(7 * DOWN + 7 * RIGHT),
+                                 vlogo[0].animate.shift(7 * UP + 7 * RIGHT),
+                                 vlogo[1].animate.shift(7 * DOWN + 7 * LEFT), Wait(2),
+                                 lag_ratio=0.1))

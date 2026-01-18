@@ -8,6 +8,8 @@
 *.ai
 *.pkf
 partial_movie_file_list.txt
+*.mov
+*.prproj
 
 # Unrelated files
 *.docx
