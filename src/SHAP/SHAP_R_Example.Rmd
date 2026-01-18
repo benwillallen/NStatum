@@ -1,0 +1,58 @@
+---
+title: "SHAP R Example"
+author: "NStatum"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(tidymodels)
+library(shapviz)
+library(fastshap)
+```
+
+## Simulating Data Set
+
+A data set will be constructed with built-in relationship between the target and features.
+
+```{r}
+x1 <- rnorm(10000, mean = 10, 2)
+x2 <- rbinom(10000, 5, 0.2)
+x3 <- rgeom(10000, 0.01)
+x4 <- rnorm(10000, mean = 100, 3)
+y <- 5 * x1 + 2 * x2 - 0.1 * x3 + rnorm(10000)
+df <- data.frame(x1, x2, x3, x4, y)
+
+ggplot(data = df, mapping = aes(x = x1, y = y)) +
+  geom_point()
+
+ggplot(data = df, mapping = aes(x = x2, y = y)) +
+  geom_point()
+
+ggplot(data = df, mapping = aes(x = x3, y = y)) +
+  geom_point()
+
+ggplot(data = df, mapping = aes(x = x4, y = y)) +
+  geom_point()
+```
+
+```{r}
+lm_model <- lm(data = df, formula = y ~ x1 + x2 + x3 + x4)
+summary(lm_model)
+```
+
+```{r}
+lm_shp <- fastshap::explain(lm_model, X = df, pred_wrapper = predict)
+lm_shp_viz <- shapviz::shapviz(lm_shp, X = df)
+```
+
+```{r}
+sv_importance(lm_shp_viz, kind = "beeswarm")
+```
+
+```{r}
+sv_dependence(lm_shp_viz, v = colnames(df)[1:4])
+```
