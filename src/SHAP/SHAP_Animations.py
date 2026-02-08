@@ -23,7 +23,8 @@ class SHAP_Animations(Scene):
         fet_add_eq = MathTex("(|F|-|S|-1)!", font_size=70, color="#fff0d5")
         prob_sub_eq = MathTex("f_{S\\cup\\{i\\}}(x_{S\\cup\\{i\\}})-f_S(x_S)", font_size=70, color="#fff0d5")
         frac_eq = MathTex("\\frac{|S|!\\cdot(|F|-|S|-1)!}{|F|!}", font_size=70, color="#fff0d5")
-        avg_marg_crtb_eq = MathTex("\\phi_i=\\sum_{S\\subseteq F\\setminus\\{i\\}}\\frac{|S|!\\cdot(|F|-|S|-1)!}{|F|!}(f_{S\\cup\\{i\\}}(x_{S\\cup\\{i\\}})-f_S(x_S))", font_size=50, color="#fff0d5")
+        avg_marg_crtb_eq = MathTex("\\phi_i=\\sum_{S\\subseteq F\\setminus\\{i\\}}\\frac{|S|!\\cdot(|F|-|S|-1)!}{|F|!}(f_{S\\cup\\{i\\}}(x_{S\\cup\\{i\\}})-f_S(x_S))",
+                                   font_size=50, color="#fff0d5")
         self.wait(1)
         self.play(Write(marg_crtb_eq))
         self.wait(2)

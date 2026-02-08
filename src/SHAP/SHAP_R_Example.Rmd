@@ -9,9 +9,10 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE)
 
 library(tidyverse)
-library(tidymodels)
+library(xgboost)
 library(shapviz)
 library(fastshap)
+library(patchwork)
 ```
 
 ## Simulating Data Set
@@ -19,34 +20,64 @@ library(fastshap)
 A data set will be constructed with built-in relationship between the target and features.
 
 ```{r}
-x1 <- rnorm(10000, mean = 10, 2)
-x2 <- rbinom(10000, 5, 0.2)
-x3 <- rgeom(10000, 0.01)
-x4 <- rnorm(10000, mean = 100, 3)
-y <- 5 * x1 + 2 * x2 - 0.1 * x3 + rnorm(10000)
-df <- data.frame(x1, x2, x3, x4, y)
+set.seed(123)
 
-ggplot(data = df, mapping = aes(x = x1, y = y)) +
-  geom_point()
+n <- 10000
 
-ggplot(data = df, mapping = aes(x = x2, y = y)) +
-  geom_point()
+square_feet <- rnorm(n, mean = 2000, sd = 500)
+num_bedrooms <- pmin(rpois(n, lambda = 3) + 1, 6)
+age_of_home <- rpois(n, lambda = 30)
+distance_to_city_center <- runif(n, 0, 30)  # miles
+neighborhood_quality <- rnorm(n, mean = 0, sd = 1)
 
-ggplot(data = df, mapping = aes(x = x3, y = y)) +
-  geom_point()
+sale_price <- 
+  50 * square_feet + 
+  8000 * num_bedrooms - 
+  1000 * age_of_home + 
+  20000 * sin(distance_to_city_center) +
+  100000 +
+  rnorm(n, sd = 10000)
 
-ggplot(data = df, mapping = aes(x = x4, y = y)) +
-  geom_point()
+df <- tibble(
+  square_feet,
+  num_bedrooms,
+  age_of_home,
+  distance_to_city_center,
+  neighborhood_quality,
+  sale_price
+)
+
+# Remove unneeded temporary variables
+rm(n, square_feet, num_bedrooms, age_of_home, distance_to_city_center, neighborhood_quality, sale_price)
 ```
 
 ```{r}
-lm_model <- lm(data = df, formula = y ~ x1 + x2 + x3 + x4)
+ggplot(data = df, mapping = aes(x = square_feet, y = sale_price)) +
+  geom_point(alpha = 0.1) +
+
+ggplot(data = df, mapping = aes(x = num_bedrooms, y = sale_price)) +
+  geom_point(alpha = 0.1) +
+
+ggplot(data = df, mapping = aes(x = age_of_home, y = sale_price)) +
+  geom_point(alpha = 0.1) +
+
+ggplot(data = df, mapping = aes(x = distance_to_city_center, y = sale_price)) +
+  geom_point(alpha = 0.1) +
+
+ggplot(data = df, mapping = aes(x = neighborhood_quality, y = sale_price)) +
+  geom_point(alpha = 0.1)
+```
+
+# Linear Regression
+
+```{r}
+lm_model <- lm(data = df, formula = sale_price ~ square_feet + num_bedrooms + age_of_home + distance_to_city_center + neighborhood_quality)
 summary(lm_model)
 ```
 
 ```{r}
-lm_shp <- fastshap::explain(lm_model, X = df, pred_wrapper = predict)
-lm_shp_viz <- shapviz::shapviz(lm_shp, X = df)
+lm_shp <- fastshap::explain(lm_model, X = df %>% select(-sale_price), pred_wrapper = predict, adjust = TRUE, nsim = 100)
+lm_shp_viz <- shapviz::shapviz(lm_shp, X = df %>% select(-sale_price))
 ```
 
 ```{r}
@@ -54,5 +85,63 @@ sv_importance(lm_shp_viz, kind = "beeswarm")
 ```
 
 ```{r}
-sv_dependence(lm_shp_viz, v = colnames(df)[1:4])
+sv_dependence(lm_shp_viz, v = colnames(df)[1:5], color_var = NULL, color = "royalblue4")
+```
+
+```{r}
+sv_force(lm_shp_viz, row_id = 1)
+sv_waterfall(lm_shp_viz, row_id = 1)
+```
+
+# XGBoost
+
+```{r}
+X <- df %>% select(-sale_price)
+y_vec <- df$sale_price
+
+dmat <- xgb.DMatrix(data = as.matrix(X), label = y_vec)
+
+params <- list(
+  objective = "reg:squarederror",
+  max_depth = 6,
+  eta = 0.05,
+  subsample = 0.8,
+  colsample_bytree = 0.8
+)
+
+xgb_model <- xgb.train(
+  params = params,
+  data = dmat,
+  nrounds = 300,
+  verbose = 0
+)
+```
+
+```{r}
+pred_fun <- function(object, newdata) {
+  predict(object, as.matrix(newdata))
+}
+
+xg_shp <- fastshap::explain(
+  object = xgb_model,
+  X = X,
+  pred_wrapper = pred_fun,
+  nsim = 100,
+  adjust = TRUE
+)
+
+xg_shp_viz <- shapviz::shapviz(xg_shp, X = X)
+```
+
+```{r}
+sv_importance(xg_shp_viz, kind = "beeswarm")
+```
+
+```{r}
+sv_dependence(xg_shp_viz, v = colnames(df)[1:5], color_var = NULL, color = "royalblue4")
+```
+
+```{r}
+sv_force(xg_shp_viz, row_id = 1)
+sv_waterfall(xg_shp_viz, row_id = 1)
 ```
