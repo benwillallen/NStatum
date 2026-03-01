@@ -17,7 +17,7 @@ library(patchwork)
 
 ## Simulating Data Set
 
-A data set will be constructed with built-in relationship between the target and features.
+A data set will be constructed with built-in relationships between the target and features.
 
 ```{r}
 set.seed(123)
@@ -27,7 +27,7 @@ n <- 10000
 square_feet <- rnorm(n, mean = 2000, sd = 500)
 num_bedrooms <- pmin(rpois(n, lambda = 3) + 1, 6)
 age_of_home <- rpois(n, lambda = 30)
-distance_to_city_center <- runif(n, 0, 30)  # miles
+distance_to_city_center <- runif(n, 0, 30)
 neighborhood_quality <- rnorm(n, mean = 0, sd = 1)
 
 sale_price <- 
@@ -89,8 +89,8 @@ sv_dependence(lm_shp_viz, v = colnames(df)[1:5], color_var = NULL, color = "roya
 ```
 
 ```{r}
-sv_force(lm_shp_viz, row_id = 1)
-sv_waterfall(lm_shp_viz, row_id = 1)
+sv_force(lm_shp_viz, row_id = 1, fill_colors = c("firebrick1", "royalblue1"))
+sv_waterfall(lm_shp_viz, row_id = 1, fill_colors = c("firebrick1", "royalblue1"))
 ```
 
 # XGBoost
@@ -142,6 +142,6 @@ sv_dependence(xg_shp_viz, v = colnames(df)[1:5], color_var = NULL, color = "roya
 ```
 
 ```{r}
-sv_force(xg_shp_viz, row_id = 1)
-sv_waterfall(xg_shp_viz, row_id = 1)
+sv_force(xg_shp_viz, row_id = 1, fill_color = c("firebrick1", "royalblue1"))
+sv_waterfall(xg_shp_viz, row_id = 1, fill_color = c("firebrick1", "royalblue1"))
 ```
